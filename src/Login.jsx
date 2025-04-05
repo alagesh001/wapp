@@ -54,6 +54,7 @@ function Login() {
               localStorage.setItem("name", data.message.name);
               localStorage.setItem("gym_id", data.message.gym_id);
               localStorage.setItem("pass_key",password);
+              localStorage.setItem("gender",data.message.gender);
 
               console.log("Login successful:", data);
                 navigate("/dashboard"); // Redirect to Dashboard
