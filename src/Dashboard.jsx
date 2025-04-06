@@ -20,7 +20,9 @@ function Dashboard() {
     const [oldPass, setOldPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [message, setMessage] = useState("");
-   
+    const goToWebrtc = () => {
+      navigate(`/callconnect/${localStorage.getItem("userid")}/${encodeURIComponent("Expert Dietician")}`);
+            }
   const handleScan = (data) => {
     if (data) {
                 setShowScanner(false);
@@ -251,7 +253,7 @@ onClick={handleLogout}
 {activeTab ==="Profile" &&(
  <div className="min-h-screen bg-white flex items-center justify-center px-4">
  <div className="bg-white p-6 md:p-10 rounded-lg shadow-lg w-full max-w-3xl">
-   <h2 className="text-center text-2xl font-semibold mb-6">Profile Information</h2>
+   <h2 className="text-center text-2xl font-semibold mb-6">Member Information</h2>
 
    <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
      <img
@@ -362,7 +364,9 @@ onClick={handleLogout}
           </div>
 
           {/* Join Button */}
-          <button className="mt-4 bg-blue-700 text-white px-4 py-2 rounded-full hover:bg-blue-800 transition">
+          <button 
+          onClick={goToWebrtc}
+          className="mt-4 bg-blue-700 text-white px-4 py-2 rounded-full hover:bg-blue-800 transition">
             Join
           </button>
         </>

@@ -11,6 +11,36 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate(); // React Router hook for navigation
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [showInstallButton, setShowInstallButton] = useState(false);
+  
+    useEffect(() => {
+        const handleBeforeInstallPrompt = (e) => {
+          e.preventDefault(); // Prevent the automatic prompt
+          setDeferredPrompt(e);
+          setShowInstall(true); // Show the install button
+        };
+    
+        window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    
+        return () => {
+          window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+        };
+      }, []);
+  
+    const handleInstallClick = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('User accepted the install prompt');
+        } else {
+          console.log('User dismissed the install prompt');
+        }
+        setDeferredPrompt(null);
+        setShowInstallButton(false);
+      }
+    };
     useEffect(() => {
         window.history.pushState(null, null, window.location.href);
         window.onpopstate = () => {
@@ -55,9 +85,16 @@ function Login() {
               localStorage.setItem("gym_id", data.message.gym_id);
               localStorage.setItem("pass_key",password);
               localStorage.setItem("gender",data.message.gender);
+              localStorage.setItem("type",data.type);
 
               console.log("Login successful:", data);
+              if(data.type == 1){
                 navigate("/dashboard"); // Redirect to Dashboard
+
+              }else{
+                navigate("/dashboard_diet"); // Redirect to Dashboard
+
+              }
                    } else {
               setError(data.message || "Login failed.");
           }
@@ -71,6 +108,14 @@ function Login() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
             <div className="w-full max-w-xl p-12 bg-white rounded-2xl shadow-xl text-center">
+            {showInstallButton && (
+        <button
+          onClick={handleInstallClick}
+          className="mt-6 mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
+          >
+          Install App
+        </button>
+      )}
                 <h2 className="text-2xl font-bold text-gray-800">Welcome to Fitness Portal</h2>
                 <p className="text-gray-600 mt-2">Are you a User or a Dietitian? Please select your role to continue.</p>
 
