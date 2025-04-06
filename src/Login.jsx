@@ -125,10 +125,10 @@ function Login() {
                         className={`flex items-center px-4 py-2 text-white rounded-lg text-lg font-medium transition ${activeTab === 'members' ? 'bg-green-600' : 'bg-gray-300'}`}
                         onClick={() => setActiveTab("members")}
                     >
-                        <FaUser className="mr-2" /> User
+                        <FaUser className="mr-2" /> Member
                     </button>
                     <button 
-                        className={`flex items-center px-4 py-2 text-white rounded-lg text-lg font-medium transition ${activeTab === 'dietician' ? 'bg-green-600' : 'bg-gray-300'}`}
+                        className={`flex items-center px-4 py-2 text-white rounded-lg text-lg font-medium transition ${activeTab === 'dietician' ? 'bg-red-600' : 'bg-gray-300'}`}
                         onClick={() => setActiveTab("dietician")}
                     >
                         <FaUserMd className="mr-2" /> Dietitian

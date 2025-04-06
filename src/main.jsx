@@ -15,3 +15,24 @@ if ('serviceWorker' in navigator) {
       .catch(err => console.error('❌ Service Worker registration failed:', err));
   });
 }
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Reload when a new SW takes control
+    window.location.reload();
+  });
+
+  navigator.serviceWorker.ready.then(registration => {
+    registration.addEventListener('updatefound', () => {
+      const newSW = registration.installing;
+      if (newSW) {
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            // Tell the new SW to activate immediately
+            newSW.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      }
+    });
+  });
+}

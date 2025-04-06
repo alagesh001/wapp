@@ -1,40 +1,33 @@
-const CACHE_NAME = 'v1';
+const CACHE_NAME = 'fitox-cache-v3.2';
 const urlsToCache = [
   '/fcheckac/',
   '/fcheckac/index.html',
-  '/fcheckac/favicon.ico',
-  '/fcheckac/manifest.webmanifest'
-
+  '/fcheckac/manifest.webmanifest',
+  '/fcheckac/fc-icon-192x192.png',
+  '/fcheckac/fc-icon-512x512.png'
 ];
-// Install service worker and cache app shell
+
+// Install service worker and cache required files
+
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Force activate on install
+});
+// Activate and clean old caches
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.keys().then(keys =>
+      Promise.all(keys.map(key => caches.delete(key)))
+    ).then(() => self.clients.claim())
   );
 });
 
-// Fetch resources
+// Fetch and serve from cache first
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
-    })
-  );
-});
-
-// Activate service worker and remove old caches
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
+    }).catch(err => {
+      console.error('[Service Worker] Fetch failed:', err);
     })
   );
 });
