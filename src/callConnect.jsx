@@ -26,6 +26,7 @@ export default function CallConnect() {
   const { id, name } = useParams();
 
   const decodedName = decodeURIComponent(name);
+  
     const [isConnected, setIsConnected] = useState(false);
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);

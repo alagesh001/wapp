@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v2';
+const CACHE_NAME = 'v1';
 const urlsToCache = [
   '/fcheckac/',
   '/fcheckac/index.html',

@@ -11,7 +11,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard_diet" element={<DashboardDiet />} />
-          <Route path="/callconnect/:callId/:name" element={<CallConnect />} />
+          <Route path="/callconnect/:id/:name" element={<CallConnect />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>

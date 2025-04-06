@@ -23,6 +23,8 @@ function DashboardDiet() {
     const myuid = localStorage.getItem("userid");
     const mygymid = localStorage.getItem("gym_id");
     const goToWebrtc = (callIdIs,name) => {
+      console.log("CCC Generated Call ID:", callIdIs);
+
       navigate(`/callconnect/${callIdIs}/${encodeURIComponent(name)}`);
     }
     const fetchDietCalls = async() => {
