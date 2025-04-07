@@ -4,17 +4,15 @@ import { initializeApp } from "firebase/app";
 import { useNavigate,useParams  } from "react-router-dom";
 
 // Firebase configuration
-
 const firebaseConfig = {
-  apiKey: "AIzaSyBRzqsWSg_ljYFhSoa6lfVHQlFgbQiYTTM",
-  authDomain: "wbrtcfitox.firebaseapp.com",
-  databaseURL: "https://wbrtcfitox-default-rtdb.asia-southeast1.firebasedatabase.app/",
-
-  projectId: "wbrtcfitox",
-  storageBucket: "wbrtcfitox.firebasestorage.app",
-  messagingSenderId: "704402530419",
-  appId: "1:704402530419:web:c2ba224361e225ce064a06",
-  measurementId: "G-X2LR0HB3CV"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 // Initialize Firebase
 initializeApp(firebaseConfig);
@@ -27,6 +25,13 @@ export default function CallConnect() {
 
   const decodedName = decodeURIComponent(name);
   const callId = id;
+  const caltitle = "calls";
+  const calecan = "calleeCandidate";
+  const callercan = "callerCandidate";
+  const acand = "calicecandidate";
+  const recand = "sendicecandidate";
+  const secand = "recicecandidate";
+
 
     const [isConnected, setIsConnected] = useState(false);
   const localVideoRef = useRef(null);
@@ -60,11 +65,11 @@ useEffect(() => {
   const handlePopState = () => {
     disconnectCall()
     const db = getDatabase();
-    const nodeRef = ref(db, `calls/${callId}`);
+    const nodeRef = ref(db, `${caltitle}/${callId}`);
     remove(nodeRef)
    
       .then(() => console.log("Node removed on back"))
-      .catch((err) => console.error("Error removing node:", err));
+      .catch((err) => console.error("Error removing node:"));
   };
 
   window.addEventListener("popstate", handlePopState);
@@ -76,11 +81,11 @@ useEffect(() => {
   useEffect(() => {
     return () => {
       if (typeRole == 1) {
-        off(ref(db, `calls/${callId}`)); // removes all listeners on that ref
-        off(ref(db, `calls/${callId}/callerCandidate`)); // same here     
+        off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
+        off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here     
          } else if (typeRole == 2) {
-          off(ref(db, `calls/${callId}/answer`)); // removes all listeners on that ref
-          off(ref(db, `calls/${callId}/calleeCandidate`)); // same here     
+          off(ref(db, `${caltitle}/${callId}/answer`)); // removes all listeners on that ref
+          off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here     
 
       }
     
@@ -91,11 +96,11 @@ useEffect(() => {
       try {
         if ('wakeLock' in navigator) {
           wakeLock.current = await navigator.wakeLock.request('screen');
-          console.log("Wake lock activated ✅");
+        //  console.log("Wake lock activated ✅");
 
           // Handle when the wake lock is released (e.g., user switches tabs)
           wakeLock.current.addEventListener('release', () => {
-            console.log("Wake lock was released ❌");
+         //   console.log("Wake lock was released ❌");
           });
         }
       } catch (err) {
@@ -139,8 +144,8 @@ let pc;
     };
     pc.onicecandidate = event => {
           if (event.candidate && event.candidate.candidate) {
-              console.log("New ICE candidate:", event.candidate);
-              const postsRef = ref(db, `calls/${callId}/callerCandidate`);
+             // console.log("New ICE candidate:", event.candidate);
+              const postsRef = ref(db, `${caltitle}/${callId}/${callercan}`);
               const candidateType = event.candidate.sdpMLineIndex === 0 ? "audio" : "video";
   
               
@@ -152,7 +157,7 @@ let pc;
   }).then(() => {
   console.log('New post added');
   }).catch((error) => {
-  console.error('Error pushing data:', error);
+  console.error('Error pushing data:');
   });
               
           }
@@ -173,7 +178,7 @@ let pc;
       }
       return stream;
     } catch (error) {
-      console.error("Error accessing media devices:", error);
+      console.error("Error accessing media devices:");
     }
   };
 
@@ -181,12 +186,12 @@ let pc;
     
       const pc = peerConnectionRef.current;
   
-      console.log("PeerConnection B" ,pc);
+     // console.log("PeerConnection B" ,pc);
   
       if (pc) {
           // Close the peer connection
           pc.close();
-          console.log("PeerConnection closed.");
+         // console.log("PeerConnection closed.");
       
           // Stop all tracks on the local stream
           if (localStreamRef.current) {
@@ -208,13 +213,13 @@ let pc;
             }, 1000);              }
               
         } else {
-          console.log("No active PeerConnection to close.");
+         // console.log("No active PeerConnection to close.");
         }
     };
   const createOffer = async () => {
     try {
-      console.log("Generated Call ID:", callId);
-      const callRefIAs = ref(db, `calls/${callId}`);
+     // console.log("Generated Call ID:", callId);
+      const callRefIAs = ref(db, `${caltitle}/${callId}`);
 
       const stream = await startStream();
       pc = createPeerConnection();
@@ -225,26 +230,26 @@ let pc;
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
 
-      set(ref(db, `calls/${callId}`), { offer });
+      set(ref(db, `${caltitle}/${callId}`), { offer });
       const timestamp = Date.now(); // e.g., 1712507436243
 
-      set(ref(db, `calls/${callId}/random_number`), timestamp);
+      set(ref(db, `${caltitle}/${callId}/random_number`), timestamp);
       listenForUpdates(callId);
       console.log("Offer created:", offer);
       setIsConnected(true);
       peerConnectionRef.current.onconnectionstatechange = () => {
         const connectionState = peerConnectionRef.current.connectionState;
-        console.log("Connection state:", connectionState);
+      //  console.log("Connection state:", connectionState);
         if (connectionState === "disconnected" || connectionState === "closed" || connectionState === "failed") {
-          off(ref(db, `calls/${callId}/answer`)); // removes all listeners on that ref
-          off(ref(db, `calls/${callId}/calleeCandidate`)); // same here     
+          off(ref(db, `${caltitle}/${callId}/answer`)); // removes all listeners on that ref
+          off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here     
           console.log("Call disconnected");
           disconnectCall();
         }
         if (connectionState === "connected") {
 
-off(ref(db, `calls/${callId}/answer`)); // removes all listeners on that ref
-          off(ref(db, `calls/${callId}/calleeCandidate`)); // same here               setIsRemoteConnected(true);
+off(ref(db, `${caltitle}/${callId}/answer`)); // removes all listeners on that ref
+          off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here               setIsRemoteConnected(true);
           removeCallNode();
         }
         setIsRemoteConnected(true);
@@ -257,12 +262,12 @@ off(ref(db, `calls/${callId}/answer`)); // removes all listeners on that ref
       const pendingCandidates = [];
 
 async function listenForUpdates(callId) {
-    const callRef = ref(db, `calls/${callId}`);
+    const callRef = ref(db, `${caltitle}/${callId}`);
 
     // Listen for the answer from Firebase
-    onValue(ref(db, `calls/${callId}/answer`), (snapshot) => {
+    onValue(ref(db, `${caltitle}/${callId}/answer`), (snapshot) => {
         const answer = snapshot.val();
-        console.log("Received answer from Firebase:", answer);
+      //  console.log("Received answer from Firebase:", answer);
     
         if (answer && answer.type === "answer" && answer.sdp) {
             pc
@@ -273,7 +278,7 @@ async function listenForUpdates(callId) {
                     })
                 )
                 .then(() => {
-                    console.log("Remote description set successfully.");
+                //    console.log("Remote description set successfully.");
     
                     // Process queued ICE candidates
                     pendingCandidates.forEach((candidate) => {
@@ -285,12 +290,12 @@ async function listenForUpdates(callId) {
                 })
                 .catch((error) => console.error("Error setting remote description:", error));
         } else {
-            console.error("Invalid or incomplete answer received:", answer);
+            console.error("Invalid or incomplete answer received:");
         }
     });
     
     // Listen for ICE candidates from Firebase
-    onValue(ref(db, `calls/${callId}/calleeCandidate`), (snapshot) => {
+    onValue(ref(db, `${caltitle}/${callId}/${calecan}`), (snapshot) => {
         const remoteCandidates = snapshot.val();
         if (remoteCandidates) {
             Object.keys(remoteCandidates).forEach((key) => {
@@ -313,11 +318,11 @@ async function listenForUpdates(callId) {
                         pendingCandidates.push(candidate);
                     }
                 } else {
-                    console.error("Invalid candidate data:", candidateData);
+                //    console.error("Invalid candidate data:", candidateData);
                 }
             });
         } else {
-            console.error("No remote candidates received.");
+          //  console.error("No remote candidates received.");
         }
 
     });
@@ -365,36 +370,36 @@ const disconnectCall = () => {
             navigate("/dashboard_diet");
 
           }
-        console.log("No active PeerConnection to close.");
+      //  console.log("No active PeerConnection to close.");
       }
   };
   const removeCallNode = () => {
-    const callRef = ref(db, `calls/${callId}`); // Adjust path as needed
+    const callRef = ref(db, `${caltitle}/${callId}`); // Adjust path as needed
     remove(callRef)
       .then(() => {
-        console.log("Call node removed from Firebase.");
+       console.log("Call node removed from Firebase.");
       })
       .catch((error) => {
-        console.error("Error removing node:", error);
+        console.error("Error removing node:");
       });
   };
   const r_numberStore = useRef(null);
-  const rrcallRef = ref(db, `calls/${callId}`);
-  const rrcandidateRef = ref(db, `calls/${callId}/callerCandidate`);
+  const rrcallRef = ref(db, `${caltitle}/${callId}`);
+  const rrcandidateRef = ref(db, `${caltitle}/${callId}/${callercan}`);
     const handleCallSnapshot = async (snapshot) => {
-      console.log("asdfasdfasda new set");
+   //   console.log("asdfasdfasda new set");
      
 
                       const data = snapshot.val();
-                      console.log("asdfasdfasda rnumber ",data?.random_number);
+                     // console.log("asdfasdfasda rnumber ",data?.random_number);
 
                       if(data?.random_number &&  r_numberStore.current == null){
                         r_numberStore.current = data?.random_number;
                       }
                       if(r_numberStore.current < data?.random_number){
                         r_numberStore.current = data?.random_number;
-                        off(ref(db, `calls/${callId}`)); // removes all listeners on that ref
-                        off(ref(db, `calls/${callId}/callerCandidate`)); // same here
+                        off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
+                        off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here
                        // disconnectCall();     
                         rejoinCall();
                                              console.log("asdfasdfasda new node created Rejonined ");
@@ -408,8 +413,8 @@ const disconnectCall = () => {
     if (pc.signalingState === "have-remote-offer") { 
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
-      set(ref(db, `calls/${callId}/answer`), answer);
-      console.log("✅ Answer created & sent.");
+      set(ref(db, `${caltitle}/${callId}/answer`), answer);
+      //console.log("✅ Answer created & sent.");
     }
     onValue(rrcandidateRef, handleCandidateSnapshot);
 
@@ -420,7 +425,7 @@ const disconnectCall = () => {
     if (remoteCandidates) {
       Object.keys(remoteCandidates).forEach((key) => {
         const candidateData = remoteCandidates[key];
-        console.log("cdataa ", candidateData);
+       // console.log("cdataa ", candidateData);
 
         if (candidateData?.candidate) {
           const candidate = new RTCIceCandidate({
@@ -433,18 +438,18 @@ const disconnectCall = () => {
             pc.addIceCandidate(candidate)
               .then(() => console.log("ICE candidate added successfully."))
               .catch((error) =>
-                console.error("Error adding ICE candidate:", error)
+                console.error("Error adding ICE candidate:")
               );
           } else {
-            console.log("Remote description not set yet. Queueing candidate.");
+            //console.log("Remote description not set yet. Queueing candidate.");
             pendingCandidates.push(candidate);
           }
         } else {
-          console.error("Invalid candidate data:", candidateData);
+         // console.error("Invalid candidate data:", candidateData);
         }
       });
     } else {
-      console.error("No remote candidates received.");
+     // console.error("No remote candidates received.");
     }
   };
   const rejoinCall = () => {
@@ -465,10 +470,10 @@ const disconnectCall = () => {
   
       pc.close();
       peerConnectionRef.current = null;
-      console.log("🔌 PeerConnection closed and cleaned up.");
+    //  console.log("🔌 PeerConnection closed and cleaned up.");
       setTimeout(() => {
-        off(ref(db, `calls/${callId}`)); // removes all listeners on that ref
-        off(ref(db, `calls/${callId}/callerCandidate`)); // same here
+        off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
+        off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here
         joinCall();
       }, 1000);
     }
@@ -480,22 +485,22 @@ const disconnectCall = () => {
       const stream = await startStream();
       pc = new RTCPeerConnection(servers);
       peerConnectionRef.current = pc;
-    console.log("PeerConnection A" ,pc);
+   // console.log("PeerConnection A" ,pc);
 
-          const callRef = ref(db, `calls/${callId}`);
+          const callRef = ref(db, `${caltitle}/${callId}`);
 
           peerConnectionRef.current.onconnectionstatechange = () => {
             const connectionState = peerConnectionRef.current.connectionState;
-            console.log("Connection state:", connectionState);
+          //  console.log("Connection state:", connectionState);
             if (connectionState === "disconnected" ||  connectionState === "closed" ||  connectionState === "failed" ) {
               console.log("Call disconnected");
-              off(ref(db, `calls/${callId}`)); // removes all listeners on that ref
-              off(ref(db, `calls/${callId}/callerCandidate`)); // same here
+              off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
+              off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here
               disconnectCall();
             }
             if (connectionState === "connected") {
-              off(ref(db, `calls/${callId}`)); // removes all listeners on that ref
-              off(ref(db, `calls/${callId}/callerCandidate`)); // same here
+              off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
+              off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here
               setIsRemoteConnected(true);
             }
           };
@@ -512,8 +517,8 @@ const disconnectCall = () => {
     pc.onicecandidate = event => {
         
         if (event.candidate && event.candidate.candidate) {
-            console.log("New ICE candidate:", event.candidate);
-            const postsRef = ref(db, `calls/${callId}/calleeCandidate`);
+           // console.log("New ICE candidate:", event.candidate);
+            const postsRef = ref(db, `${caltitle}/${callId}/${calecan}`);
             const candidateType = event.candidate.sdpMLineIndex === 0 ? "audio" : "video";
 
             
@@ -525,7 +530,7 @@ sdpMLineIndex: event.candidate.sdpMLineIndex
 }).then(() => {
 console.log('New post added');
 }).catch((error) => {
-console.error('Error pushing data:', error);
+console.error('Error pushing data:');
 });
             
         }
@@ -533,7 +538,7 @@ console.error('Error pushing data:', error);
 
       setIsConnected(true);
     } catch (error) {
-      console.error("Error joining call:", error);
+      console.error("Error joining call:");
     }
   };
 
