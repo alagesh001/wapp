@@ -22,9 +22,10 @@
 import fs from "fs";
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
+import { VitePWA } from 'vite-plugin-pwa';
+
 export default defineConfig({
   server: {
           https: true,
@@ -38,7 +39,11 @@ export default defineConfig({
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),,mkcert()
+    react(), tailwindcss(),mkcert(), 
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+    })
   ]
 });
 
