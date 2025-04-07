@@ -1,22 +1,10 @@
 import React, { useEffect,useState, useRef } from "react";
-import { getDatabase, ref, set, push, onValue,remove,off,onDisconnect } from "firebase/database";
-import { initializeApp } from "firebase/app";
+import { ref, set, push, onValue,remove,off,onDisconnect } from "firebase/database";
 import { useNavigate,useParams  } from "react-router-dom";
+import { signInAnonymously, signOut,deleteUser } from "firebase/auth";
+import { auth ,db} from "./firebase";
+import { useAuth } from "./useAuth";
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-};
-// Initialize Firebase
-initializeApp(firebaseConfig);
-const db = getDatabase();
 
 export default function CallConnect() {
   const wakeLock = useRef(null);
@@ -46,6 +34,28 @@ export default function CallConnect() {
   const [isMember, setIsMember] = useState(true);
   const [callDuration, setCallDuration] = useState("00:00");
 const [startTime, setStartTime] = useState(null);
+const user = useAuth();
+
+const handleLogin = async () => {
+  try {
+    await signInAnonymously(auth);
+    console.log("Signed in anonymously");
+
+    // ✅ Do stuff after login here
+    // e.g. write to DB, start WebRTC, etc.
+
+  } catch (err) {
+    console.error("Failed to sign in anonymously:", err);
+  }
+};
+const handleLogout = async () => {
+  try {
+    (async () => {  await deleteUser( auth.currentUser); })();
+    console.log("Anonymous user deleted");
+  } catch (err) {
+    console.error("Failed to delete anonymous user:");
+  }
+};
 useEffect(() => {
   let interval;
   if (isremoteConnected) {
@@ -62,14 +72,18 @@ useEffect(() => {
 }, [isremoteConnected, startTime]);
 
 useEffect(() => {
-  const handlePopState = () => {
-    disconnectCall()
-    const db = getDatabase();
-    const nodeRef = ref(db, `${caltitle}/${callId}`);
-    remove(nodeRef)
-   
-      .then(() => console.log("Node removed on back"))
-      .catch((err) => console.error("Error removing node:"));
+ // handleLogin();
+  const handlePopState = async () => {
+    try {
+      const nodeRef = ref(db, `${caltitle}/${callId}`);
+      await remove(nodeRef);
+      disconnectCall();
+      console.log("Node removed on back");
+    } catch (err) {
+      console.error("Error removing node:", err);
+    }
+
+    // Properly await logout
   };
 
   window.addEventListener("popstate", handlePopState);
@@ -78,6 +92,7 @@ useEffect(() => {
     window.removeEventListener("popstate", handlePopState);
   };
 }, []);
+
   useEffect(() => {
     return () => {
       if (typeRole == 1) {
@@ -249,7 +264,7 @@ let pc;
         if (connectionState === "connected") {
 
 off(ref(db, `${caltitle}/${callId}/answer`)); // removes all listeners on that ref
-          off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here               setIsRemoteConnected(true);
+          off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here               
           removeCallNode();
         }
         setIsRemoteConnected(true);
@@ -332,6 +347,7 @@ const disconnectCall = () => {
   if(!isMember){
   removeCallNode();
   }
+
     const pc = peerConnectionRef.current;
 
     console.log("PeerConnection B" ,pc);
@@ -372,6 +388,8 @@ const disconnectCall = () => {
           }
       //  console.log("No active PeerConnection to close.");
       }
+     // handleLogout();
+
   };
   const removeCallNode = () => {
     const callRef = ref(db, `${caltitle}/${callId}`); // Adjust path as needed
@@ -424,10 +442,13 @@ const disconnectCall = () => {
     const remoteCandidates = snapshot.val();
     if (remoteCandidates) {
       Object.keys(remoteCandidates).forEach((key) => {
+        if(isremoteConnected){
+          return;
+        }
         const candidateData = remoteCandidates[key];
-       // console.log("cdataa ", candidateData);
 
         if (candidateData?.candidate) {
+
           const candidate = new RTCIceCandidate({
             candidate: candidateData.candidate,
             sdpMid: candidateData.sdpMid,
