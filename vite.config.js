@@ -27,19 +27,19 @@ import mkcert from 'vite-plugin-mkcert'
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  server: {
-          https: true,
-             host: true, // Allow access from network
-           port: 5173, // Default Vite port
-             https: {
-               key: fs.readFileSync("localhost+2-key.pem"),
-              cert: fs.readFileSync("localhost+2.pem"),
-             },
-           },
+  // server: {
+  //         https: true,
+  //            host: true, // Allow access from network
+  //          port: 5173, // Default Vite port
+  //            https: {
+  //              key: fs.readFileSync("localhost+2-key.pem"),
+  //             cert: fs.readFileSync("localhost+2.pem"),
+  //            },
+  //          },
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),mkcert(), 
+    react(), tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],

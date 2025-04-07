@@ -1,24 +1,38 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 import './index.css'
+import App from './App.jsx'
 
-// Register PWA
-import { registerSW } from 'virtual:pwa-register'
-registerSW({ immediate: true })
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
     <App />
-  </React.StrictMode>
+  </StrictMode>,
 )
-const updateSW = registerSW({
-  onNeedRefresh() {
-    if (confirm("A new version is available. Refresh now?")) {
-      updateSW(true)
-    }
-  },
-  onOfflineReady() {
-    console.log("App is ready to work offline.")
-  }
-})
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/fcheckac/sw.js')
+    .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+      .catch(err => console.error('❌ Service Worker registration failed:', err));
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    // Reload when a new SW takes control
+    window.location.reload();
+  });
+
+  navigator.serviceWorker.ready.then(registration => {
+    registration.addEventListener('updatefound', () => {
+      const newSW = registration.installing;
+      if (newSW) {
+        newSW.addEventListener('statechange', () => {
+          if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+            // Tell the new SW to activate immediately
+            newSW.postMessage({ type: 'SKIP_WAITING' });
+          }
+        });
+      }
+    });
+  });
+}

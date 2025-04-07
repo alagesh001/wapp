@@ -5,14 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBRzqsWSg_ljYFhSoa6lfVHQlFgbQiYTTM",
-  authDomain: "wbrtcfitox.firebaseapp.com",
-  databaseURL: "https://wbrtcfitox-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "wbrtcfitox",
-  storageBucket: "wbrtcfitox.firebasestorage.app",
-  messagingSenderId: "704402530419",
-  appId: "1:704402530419:web:c2ba224361e225ce064a06",
-  measurementId: "G-X2LR0HB3CV"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 initializeApp(firebaseConfig);
@@ -36,6 +36,8 @@ export default function CallConnect() {
   const [startTime, setStartTime] = useState(null);
   const listenersRef = useRef([]); // ✅ to track listeners
   const callId = id;
+  const ftitle = import.meta.env.VITE_F_TITLE;
+
   let pc;
   const servers = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -51,7 +53,7 @@ export default function CallConnect() {
     onValue(dbRef, callback);
     listenersRef.current.push({ ref: dbRef, callback });
   };
-  const callRefIs = ref(db, `calls/${callId}`);
+  const callRefIs = ref(db, `${ftitle}/${callId}`);
   onDisconnect(callRefIs).remove();
 
   const removeAllListeners = () => {
@@ -116,7 +118,7 @@ export default function CallConnect() {
     };
     pc.onicecandidate = event => {
       if (event.candidate?.candidate) {
-        const postsRef = ref(db, `calls/${callId}/callerCandidate`);
+        const postsRef = ref(db, `${ftitle}/${callId}/callerCandidate`);
         push(postsRef, {
           candidate: event.candidate.candidate,
           sdpMid: event.candidate.sdpMid,
@@ -142,7 +144,7 @@ export default function CallConnect() {
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
-      await set(ref(db, `calls/${callId}`), { offer });
+      await set(ref(db, `${ftitle}/${callId}`), { offer });
       listenForUpdates(callId);
       setIsConnected(true);
 
@@ -166,8 +168,8 @@ export default function CallConnect() {
 
   async function listenForUpdates(callId) {
     const pendingCandidates = [];
-    const answerRef = ref(db, `calls/${callId}/answer`);
-    const calleeCandidateRef = ref(db, `calls/${callId}/calleeCandidate`);
+    const answerRef = ref(db, `${ftitle}/${callId}/answer`);
+    const calleeCandidateRef = ref(db, `${ftitle}/${callId}/calleeCandidate`);
 
     addListener(answerRef, (snapshot) => {
       const answer = snapshot.val();
@@ -201,7 +203,7 @@ export default function CallConnect() {
     pc = new RTCPeerConnection(servers);
     peerConnectionRef.current = pc;
     stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-    const callRef = ref(db, `calls/${callId}`);
+    const callRef = ref(db, `${ftitle}/${callId}`);
 
     peerConnectionRef.current.onconnectionstatechange = () => {
       const connectionState = peerConnectionRef.current.connectionState;
@@ -236,11 +238,11 @@ export default function CallConnect() {
         await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-        await set(ref(db, `calls/${callId}/answer`), answer);
+        await set(ref(db, `${ftitle}/${callId}/answer`), answer);
       }
     });
 
-    addListener(ref(db, `calls/${callId}/callerCandidate`), (snapshot) => {
+    addListener(ref(db, `${ftitle}/${callId}/callerCandidate`), (snapshot) => {
       const remoteCandidates = snapshot.val();
       if (remoteCandidates) {
         Object.values(remoteCandidates).forEach((candidateData) => {
@@ -258,7 +260,7 @@ export default function CallConnect() {
 
     pc.onicecandidate = event => {
       if (event.candidate?.candidate) {
-        push(ref(db, `calls/${callId}/calleeCandidate`), {
+        push(ref(db, `${ftitle}/${callId}/calleeCandidate`), {
           candidate: event.candidate.candidate,
           sdpMid: event.candidate.sdpMid,
           sdpMLineIndex: event.candidate.sdpMLineIndex
@@ -293,7 +295,7 @@ export default function CallConnect() {
   };
 
   const removeCallNode = () => {
-    remove(ref(db, `calls/${callId}`)).catch(console.error);
+    remove(ref(db, `${ftitle}/${callId}`)).catch(console.error);
   };
 
   return (

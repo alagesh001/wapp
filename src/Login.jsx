@@ -13,7 +13,19 @@ function Login() {
     const navigate = useNavigate(); // React Router hook for navigation
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [showInstallButton, setShowInstallButton] = useState(false);
-  
+    useEffect(() => {
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        const roleType = localStorage.getItem("type");
+
+        if (isLoggedIn === "true") {
+            if(roleType == 1){
+                navigate("/dashboard"); // Redirect to Dashboard
+
+              }else{
+                navigate("/dashboard_diet"); // Redirect to Dashboard
+
+              }        }
+      }, []);
     useEffect(() => {
         const handleBeforeInstallPrompt = (e) => {
           e.preventDefault(); // Prevent the automatic prompt
@@ -88,6 +100,7 @@ function Login() {
               localStorage.setItem("type",data.type);
 
               console.log("Login successful:", data);
+              localStorage.setItem("isLoggedIn", "true");
               if(data.type == 1){
                 navigate("/dashboard"); // Redirect to Dashboard
 
