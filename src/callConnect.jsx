@@ -4,17 +4,27 @@ import { initializeApp } from "firebase/app";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Firebase configuration
+// const firebaseConfig = {
+//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+//   databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+//   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+// };
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-};
+  apiKey: "AIzaSyBRzqsWSg_ljYFhSoa6lfVHQlFgbQiYTTM",
+  authDomain: "wbrtcfitox.firebaseapp.com",
+  databaseURL: "https://wbrtcfitox-default-rtdb.asia-southeast1.firebasedatabase.app/",
 
+  projectId: "wbrtcfitox",
+  storageBucket: "wbrtcfitox.firebasestorage.app",
+  messagingSenderId: "704402530419",
+  appId: "1:704402530419:web:c2ba224361e225ce064a06",
+  measurementId: "G-X2LR0HB3CV"
+};
 initializeApp(firebaseConfig);
 const db = getDatabase();
 
@@ -36,15 +46,24 @@ export default function CallConnect() {
   const [startTime, setStartTime] = useState(null);
   const listenersRef = useRef([]); // ✅ to track listeners
   const callId = id;
-  const ftitle = import.meta.env.VITE_F_TITLE;
+  const ftitle = "calls";
+  const isOfferHandled = useRef(false);  // Flag to ensure the offer is handled only once
 
   let pc;
   const servers = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   };
-
+  
   useEffect(() => {
     return () => {
+      console.log("peerConnectionRef check ");
+
+      if (peerConnectionRef.current) {
+        console.log("peerConnectionRef exist ");
+
+        peerConnectionRef.current.close();
+        peerConnectionRef.current = null;
+      }
       removeAllListeners();
     };
   }, []);
@@ -150,6 +169,8 @@ export default function CallConnect() {
 
       peerConnectionRef.current.onconnectionstatechange = () => {
         const connectionState = peerConnectionRef.current.connectionState;
+        console.log("Connection createOffer state:", connectionState);
+
         if (["disconnected", "closed"].includes(connectionState)) {
         
 
@@ -207,6 +228,8 @@ export default function CallConnect() {
 
     peerConnectionRef.current.onconnectionstatechange = () => {
       const connectionState = peerConnectionRef.current.connectionState;
+      console.log("Connection joinCall state:", connectionState);
+
       if (["disconnected", "closed"].includes(connectionState)) {
      // removeCallNode();
         disconnectCall();
@@ -232,9 +255,13 @@ export default function CallConnect() {
 
     const pendingCandidates = [];
 
-    addListener(callRef, async (snapshot) => {
+    addListener(ref(db, `${ftitle}/${callId}`), async (snapshot) => {
       const data = snapshot.val();
-      if (data?.offer && !pc.currentRemoteDescription) {
+      console.log("datacheckare  ",data?.offer);
+
+      if ( data?.offer && !pc.currentRemoteDescription && !isOfferHandled.current) {
+        isOfferHandled.current = true;  // Set flag to prevent further processing
+
         await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
