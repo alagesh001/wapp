@@ -127,7 +127,7 @@ function Login() {
           className="mt-6 mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
           >
           Install App
-          <p>Version: 1.1</p>
+          <p>Version: 4</p>
         </button>
       )}
                 <h2 className="text-2xl font-bold text-gray-800">Welcome to Fitness Portal</h2>

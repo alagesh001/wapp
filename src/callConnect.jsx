@@ -1,5 +1,5 @@
 import React, { useEffect,useState, useRef } from "react";
-import { getDatabase, ref, set, push, onValue,remove,off } from "firebase/database";
+import { getDatabase, ref, set, push, onValue,remove,off,onDisconnect } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { useNavigate,useParams  } from "react-router-dom";
 
@@ -56,7 +56,23 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [isremoteConnected, startTime]);
 
+useEffect(() => {
+  const handlePopState = () => {
+    disconnectCall()
+    const db = getDatabase();
+    const nodeRef = ref(db, `calls/${callId}`);
+    remove(nodeRef)
+   
+      .then(() => console.log("Node removed on back"))
+      .catch((err) => console.error("Error removing node:", err));
+  };
 
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, []);
   useEffect(() => {
     return () => {
       if (typeRole == 1) {
@@ -198,6 +214,7 @@ let pc;
   const createOffer = async () => {
     try {
       console.log("Generated Call ID:", callId);
+      const callRefIAs = ref(db, `calls/${callId}`);
 
       const stream = await startStream();
       pc = createPeerConnection();
@@ -232,6 +249,7 @@ off(ref(db, `calls/${callId}/answer`)); // removes all listeners on that ref
         }
         setIsRemoteConnected(true);
       }
+        onDisconnect(callRefIAs).remove();
     } catch (error) {
       console.error("Error creating offer:", error);
     }
@@ -340,6 +358,13 @@ const disconnectCall = () => {
 
               }
       } else {
+        if(typeRole == 1){       
+          navigate("/dashboard");
+        }
+          else if(typeRole == 2){
+            navigate("/dashboard_diet");
+
+          }
         console.log("No active PeerConnection to close.");
       }
   };
@@ -380,7 +405,7 @@ const disconnectCall = () => {
       await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
     
     }
-    if (pc.signalingState === "have-remote-offer") {
+    if (pc.signalingState === "have-remote-offer") { 
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       set(ref(db, `calls/${callId}/answer`), answer);
@@ -535,6 +560,14 @@ console.error('Error pushing data:', error);
     <span className="font-semibold text-lg">{decodedName}</span>
     <span className="text-sm">{callDuration}</span>
   </div>
+  <div className="absolute top-4 right-4 z-30">
+      <button
+        onClick={disconnectCall} // or your custom back logic
+        className="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 shadow-md text-sm font-semibold"
+      >
+        ✕
+      </button>
+    </div>
   {/* Controls */}
   <div className="absolute bottom-4 left-4 flex gap-2 z-30">
     {!isConnected ? (

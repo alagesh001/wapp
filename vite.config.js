@@ -39,7 +39,7 @@ export default defineConfig({
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),,mkcert(),
+    react(), tailwindcss(),mkcert(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
