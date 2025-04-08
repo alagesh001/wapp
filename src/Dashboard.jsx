@@ -366,7 +366,7 @@ onClick={handleLogout}
           {/* Join Button */}
           <button 
           onClick={goToWebrtc}
-          className="mt-4 bg-blue-700 text-white px-4 py-2 rounded-full hover:bg-blue-800 transition">
+          className="mt-4 bg-green-700 text-white px-4 py-2 rounded-full hover:bg-blue-800 transition">
             Join
           </button>
         </>

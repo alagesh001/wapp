@@ -279,7 +279,7 @@ onClick={handleLogout}
 
             <button 
     onClick={() => goToWebrtc(call.userid,call.name)}
-    className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+    className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"

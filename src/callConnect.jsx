@@ -565,7 +565,7 @@ console.error('Error pushing data:');
 
 
   return (
-    <div className="relative w-screen h-screen bg-black overflow-hidden">
+<div className="fixed inset-0 bg-black overflow-hidden">
   {/* Remote Video - Fullscreen */}
   <video
     ref={remoteVideoRef}
@@ -601,14 +601,14 @@ console.error('Error pushing data:');
        {!isMember ? (
     <button
       onClick={createOffer}
-      className="px-4 py-2 text-white bg-green-600 rounded-md hover:opacity-80 text-sm font-semibold shadow-md"
+      className="px-6 py-3 text-white bg-green-600 rounded-md hover:opacity-80 text-sm font-semibold shadow-md"
     >
       Start
     </button>
   ) : (
     <button
       onClick={joinCall}
-      className="px-4 py-2 text-white bg-blue-600 rounded-md hover:opacity-80 text-sm font-semibold shadow-md"
+      className="px-6 py-3 text-white bg-blue-600 rounded-md hover:opacity-80 text-sm font-semibold shadow-md"
     >
       Join
     </button>
