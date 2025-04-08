@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fitox-cache-v4.2';
+const CACHE_NAME = 'fitox-cache-v4.3.1';
 const urlsToCache = [
   '/fcheckac/',
   '/fcheckac/index.html',

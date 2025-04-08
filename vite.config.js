@@ -25,6 +25,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
 import { VitePWA } from 'vite-plugin-pwa';
+import javascriptObfuscator from 'vite-plugin-javascript-obfuscator';
 
 export default defineConfig({
   server: {
@@ -39,7 +40,14 @@ export default defineConfig({
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),mkcert(),
+    react(), tailwindcss(),mkcert(),   javascriptObfuscator({
+      compact: true,
+      controlFlowFlattening: true,
+      deadCodeInjection: true,
+      debugProtection: true,
+      stringArray: true,
+      rotateStringArray: true,
+    }, ['**/vendor/**']), // exclude vendor files if needed
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],

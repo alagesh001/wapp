@@ -578,7 +578,13 @@ console.error('Error pushing data:');
   <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
-      <p className="text-white text-sm font-medium">Connecting...</p>
+      {isMember ?(
+      <p className="text-white text-sm font-medium">Waiting for Host to join...</p>
+
+      ):(
+        <p className="text-white text-sm font-medium">Waiting for Member to join...</p>
+
+      )}
     </div>
   </div>
 )}

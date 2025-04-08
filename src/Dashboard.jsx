@@ -20,6 +20,48 @@ function Dashboard() {
     const [oldPass, setOldPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [message, setMessage] = useState("");
+    const [broadmessage, setBroadMessage] = useState("");
+
+    useEffect(() => {
+      // This runs on page load or refresh
+      const fetchb_message = async () => {
+        setLoading(true);
+      //  setError(null);
+        const gymId = localStorage.getItem("gym_id");
+        const payload = {
+            gymid: gymId || null, // Set null if mobile is empty
+         
+          };
+        try {
+            //console.log("Sending payload:", payload);
+    
+            const url = `https://oxadmedia.in/getb_message?gymid=${gymId}`;
+    
+            const response = await fetch(url, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            });
+          if (!response.ok) {
+           // throw new Error("Failed to fetch message");
+          }
+          const data = await response.json();
+          console.log(" response:bmessage ", data.result.broad_msg);
+    
+          if(data.success){
+setBroadMessage(data.result.broad_msg);
+          //  setCurrentView("products");
+          
+         
+          }
+        } catch (err) {
+         // setError(err.message);
+        } finally {
+        }
+      };
+     
+  
+      fetchb_message();
+    }, []);
     const goToWebrtc = () => {
       navigate(`/callconnect/${localStorage.getItem("userid")}/${encodeURIComponent("Expert Dietician")}`);
             }
@@ -30,6 +72,7 @@ function Dashboard() {
         setScanResult(data.text);
     }
 };
+
 useEffect(() => {
   if (scanResult !== null) {
   if (scanResult === "123xyz") {
@@ -180,7 +223,7 @@ const handleError = (err) => {
        
         };
       try {
-          console.log("Sending payload:", payload);
+         // console.log("Sending payload:", payload);
   
           const url = `https://oxadmedia.in/getmyproducts?gymid=${gymId}`;
   
@@ -377,6 +420,13 @@ onClick={handleLogout}
 )}
         {activeTab === "Attendance" && (
          <div className="mt-4 flex flex-col items-center justify-center p-6">
+<div className="absolute top-20 left-0 w-full text-center px-4">
+{broadmessage?.trim() && (
+  <h3 className="text-gray-700 font-semibold text-base bg-gray-100/80 backdrop-blur-sm py-2 px-4 rounded text-center">
+    {broadmessage}
+  </h3>
+)}
+      </div>
             {/* QR Scanner */}
             {showScanner ? (
   <div className="w-64 bg-white p-2 rounded-lg shadow-md">

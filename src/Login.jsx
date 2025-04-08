@@ -13,7 +13,8 @@ function Login() {
     const navigate = useNavigate(); // React Router hook for navigation
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [showInstallButton, setShowInstallButton] = useState(false);
-    
+    const version_n = "4.3.1";
+
     useEffect(() => {
         const isLoggedIn = localStorage.getItem("isLoggedIn");
         const roleType = localStorage.getItem("type");
@@ -129,7 +130,7 @@ function Login() {
           className="mt-6 mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
           >
           Install App
-          <p>Version: 4.2</p>
+          <p>Version: {version_n}</p>
         </button>
       )}
                 <h2 className="text-2xl font-bold text-gray-800">Welcome to Fitness Portal</h2>
@@ -181,7 +182,7 @@ function Login() {
                 </div>
 
                 <p className="text-gray-500 text-sm mt-4">Selecting a role will help us personalize your experience.</p>
-                <p className="text-gray-500 text-sm mt-4">Version 4.2</p>
+                <p className="text-gray-500 text-sm mt-4">Version {version_n}</p>
 
             </div>
         </div>
