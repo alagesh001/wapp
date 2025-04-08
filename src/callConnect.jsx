@@ -28,6 +28,7 @@ export default function CallConnect() {
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
   const [isremoteConnected, setIsRemoteConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(null);
 
   const navigate = useNavigate();
   const typeRole = localStorage.getItem("type");
@@ -233,6 +234,7 @@ let pc;
     };
   const createOffer = async () => {
     try {
+      setIsConnecting(true);
      // console.log("Generated Call ID:", callId);
       const callRefIAs = ref(db, `${caltitle}/${callId}`);
 
@@ -262,6 +264,7 @@ let pc;
           disconnectCall();
         }
         if (connectionState === "connected") {
+          setIsConnecting(false);
 
 off(ref(db, `${caltitle}/${callId}/answer`)); // removes all listeners on that ref
           off(ref(db, `${caltitle}/${callId}/${calecan}`)); // same here               
@@ -503,6 +506,8 @@ const disconnectCall = () => {
   const joinCall = async () => {
 
     try {
+      setIsConnecting(true);
+
       const stream = await startStream();
       pc = new RTCPeerConnection(servers);
       peerConnectionRef.current = pc;
@@ -520,6 +525,8 @@ const disconnectCall = () => {
               disconnectCall();
             }
             if (connectionState === "connected") {
+              setIsConnecting(false);
+
               off(ref(db, `${caltitle}/${callId}`)); // removes all listeners on that ref
               off(ref(db, `${caltitle}/${callId}/${callercan}`)); // same here
               setIsRemoteConnected(true);
@@ -567,6 +574,14 @@ console.error('Error pushing data:');
   return (
 <div className="fixed inset-0 bg-black overflow-hidden">
   {/* Remote Video - Fullscreen */}
+  {isConnecting && (
+  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
+      <p className="text-white text-sm font-medium">Connecting...</p>
+    </div>
+  </div>
+)}
   <video
     ref={remoteVideoRef}
     autoPlay
