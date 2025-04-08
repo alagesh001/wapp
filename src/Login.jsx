@@ -13,7 +13,7 @@ function Login() {
     const navigate = useNavigate(); // React Router hook for navigation
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [showInstallButton, setShowInstallButton] = useState(false);
-    const version_n = "4.3.1";
+    const version_n = "4.3.2";
 
     useEffect(() => {
         const isLoggedIn = localStorage.getItem("isLoggedIn");

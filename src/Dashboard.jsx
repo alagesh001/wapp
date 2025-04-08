@@ -21,7 +21,23 @@ function Dashboard() {
     const [newPass, setNewPass] = useState("");
     const [message, setMessage] = useState("");
     const [broadmessage, setBroadMessage] = useState("");
-
+    useEffect(() => {
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === "hidden") {
+          // Page went to background
+          setShowScanner(false);
+        } else if (document.visibilityState === "visible") {
+          setShowScanner(true);
+          // Optional: restartCamera();
+        }
+      };
+    
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    
+      return () => {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      };
+    }, []);
     useEffect(() => {
       // This runs on page load or refresh
       const fetchb_message = async () => {
@@ -422,9 +438,9 @@ onClick={handleLogout}
          <div className="mt-4 flex flex-col items-center justify-center p-6">
 <div className="absolute top-20 left-0 w-full text-center px-4">
 {broadmessage?.trim() && (
-  <h3 className="text-gray-700 font-semibold text-base bg-gray-100/80 backdrop-blur-sm py-2 px-4 rounded text-center">
-    {broadmessage}
-  </h3>
+  <h3 className="text-gray-800 font-semibold text-lg bg-gray-200/80 backdrop-blur-md py-3 px-5 rounded-xl shadow-sm text-center border border-gray-300">
+  📣 <span className="text-blue-600">From GYM:</span> {broadmessage}
+</h3>
 )}
       </div>
             {/* QR Scanner */}

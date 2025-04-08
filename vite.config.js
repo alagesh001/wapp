@@ -40,7 +40,7 @@ export default defineConfig({
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),mkcert(),   javascriptObfuscator({
+    react(), tailwindcss(),mkcert(),  javascriptObfuscator({
       compact: true,
       controlFlowFlattening: true,
       deadCodeInjection: true,
