@@ -26,21 +26,22 @@ import tailwindcss from '@tailwindcss/vite'
 import mkcert from 'vite-plugin-mkcert'
 import { VitePWA } from 'vite-plugin-pwa';
 import javascriptObfuscator from 'vite-plugin-javascript-obfuscator';
+import terser  from '@rollup/plugin-terser';
 
 export default defineConfig({
-  server: {
-          https: true,
-             host: true, // Allow access from network
-           port: 5173, // Default Vite port
-             https: {
-               key: fs.readFileSync("localhost+2-key.pem"),
-              cert: fs.readFileSync("localhost+2.pem"),
-             },
-           },
+  // server: {
+  //         https: true,
+  //            host: true, // Allow access from network
+  //          port: 5173, // Default Vite port
+  //            https: {
+  //              key: fs.readFileSync("localhost+2-key.pem"),
+  //             cert: fs.readFileSync("localhost+2.pem"),
+  //            },
+  //          },
   base: '/fcheckac/', // <-- your subdirectory path
 
   plugins: [
-    react(), tailwindcss(),mkcert(),  javascriptObfuscator({
+    react(), tailwindcss(),  javascriptObfuscator({
       compact: true,
       controlFlowFlattening: true,
       deadCodeInjection: true,
@@ -51,7 +52,14 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
-    })
+    }),  
+     terser({
+      compress: true, // Enable compression
+      mangle: true,   // Enable mangling of variable and function names
+      format: {
+        comments: false, // Remove all comments
+      },
+    }),
   ]
 });
 
