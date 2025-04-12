@@ -112,7 +112,7 @@ function DashboardDiet() {
             userid: myuid,
             oldpass: oldPass,
             newpass: newPass,
-            type: 1,
+            type: 2,
           }),
         });
     
@@ -382,25 +382,25 @@ onClick={handleLogout}
     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-20 mb-20 mx-5 sm:mx-10 lg:mx-20 place-items-center">
       {products.map((product) => (
         <div
-          key={product.productId}
-          className="bg-white p-4 rounded-lg shadow-md text-center w-full max-w-[200px] md:max-w-[250px]"
-        >
-          <div className="w-full h-40 flex items-center justify-center">
-            <img
-              src={product.pic}
-              alt={product["Product Name"]}
-              className="max-h-full object-contain"
-            />
-          </div>
-          <h3 className="text-lg font-semibold mt-2">
-            {product["Product Name"]}
-          </h3>
-          <p className="text-sm text-gray-500">
-            <s>₹{product.actualprice}</s>
-          </p>
-          <p className="text-lg font-bold text-blue-500">
-            ₹{product.offerprice}
-          </p>
+        key={product.id}
+        className="bg-white p-4 rounded-lg shadow-md text-center w-full max-w-[200px] md:max-w-[250px]"
+      >
+        <div className="w-full h-40 flex items-center justify-center">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="max-h-full object-contain"
+          />
+        </div>
+        <h3 className="text-lg font-semibold mt-2">
+          {product.name}
+        </h3>
+        <p className="text-sm text-gray-500">
+          <s>₹{product.actualPrice}</s>
+        </p>
+        <p className="text-lg font-bold text-blue-500">
+          ₹{product.offerPrice}
+        </p>
 
           {/* Buy Now Button */}
           <button
