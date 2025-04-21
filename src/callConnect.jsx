@@ -234,6 +234,7 @@ let pc;
     };
   const createOffer = async () => {
     try {
+     
       setIsConnecting(true);
      // console.log("Generated Call ID:", callId);
       const callRefIAs = ref(db, `${caltitle}/${callId}`);
@@ -252,7 +253,7 @@ let pc;
 
       set(ref(db, `${caltitle}/${callId}/random_number`), timestamp);
       listenForUpdates(callId);
-      console.log("Offer created:", offer);
+      //console.log("Offer created:", offer);
       setIsConnected(true);
       peerConnectionRef.current.onconnectionstatechange = () => {
         const connectionState = peerConnectionRef.current.connectionState;
@@ -353,7 +354,7 @@ const disconnectCall = () => {
 
     const pc = peerConnectionRef.current;
 
-    console.log("PeerConnection B" ,pc);
+   // console.log("PeerConnection B" ,pc);
 
     if (pc) {
         // Close the peer connection
@@ -579,10 +580,17 @@ console.error('Error pushing data:');
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"></div>
       {isMember ?(
-      <p className="text-white text-sm font-medium">Waiting for Host to join...</p>
-
-      ):(
-        <p className="text-white text-sm font-medium">Waiting for Member to join...</p>
+        <p className="text-white text-sm font-medium text-center">
+  Waiting for Host to join...<br />
+  For the best experience, use Edge or Chrome.<br />
+  Use mobile data or any normal Wi-Fi (Private Wi-Fi is not recommended).
+</p>
+) : (
+<p className="text-white text-sm font-medium text-center">
+  Waiting for Member to join...<br />
+  For the best experience, use Edge or Chrome.<br />
+  Use mobile data or any normal Wi-Fi (Private Wi-Fi is not recommended).
+</p>
 
       )}
     </div>
