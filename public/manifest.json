@@ -1,20 +1,20 @@
 {
   "name": "Fitox Connect",
   "short_name": "Fitox Connect",
-  "start_url": "/fcheckac/",
+  "start_url": "/fitoxconnect/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0f172a",
-  "scope": "/fcheckac/",
+  "scope": "/fitoxconnect/",
 
   "icons": [
     {
-      "src": "/fcheckac/fc-icon-192x192.png",
+      "src": "/fitoxconnect/fc-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/fcheckac/fc-icon-512x512.png",
+      "src": "/fitoxconnect/fc-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

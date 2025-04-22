@@ -38,7 +38,7 @@ export default defineConfig({
   //             cert: fs.readFileSync("localhost+2.pem"),
   //            },
   //          },
-  base: '/fcheckac/', // <-- your subdirectory path
+  base: '/fitoxconnect/', // <-- your subdirectory path
 
   plugins: [
     react(), tailwindcss(),  javascriptObfuscator({
