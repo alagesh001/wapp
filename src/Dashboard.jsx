@@ -11,6 +11,7 @@ function Dashboard() {
     const [attendanceCount, setAttendanceCount] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [admin_contactIs, setAdminCont] = useState("");
 
     const [scanResult, setScanResult] = useState(null);
     const [showScanner, setShowScanner] = useState(true); // Control scanner visibility
@@ -21,6 +22,7 @@ function Dashboard() {
     const [newPass, setNewPass] = useState("");
     const [message, setMessage] = useState("");
     const [broadmessage, setBroadMessage] = useState("");
+
     useEffect(() => {
       const handleVisibilityChange = () => {
         if (document.visibilityState === "hidden") {
@@ -61,10 +63,12 @@ function Dashboard() {
            // throw new Error("Failed to fetch message");
           }
           const data = await response.json();
-          console.log(" response:bmessage ", data.result.broad_msg);
     
           if(data.success){
 setBroadMessage(data.result.broad_msg);
+setAdminCont(data.result.admin_contact ? String(data.result.admin_contact) : "null");
+console.log(" response:adminCont ", data.result.admin_contact);
+
           //  setCurrentView("products");
           
          
@@ -264,6 +268,15 @@ const handleError = (err) => {
         setLoading(false);
       }
     };
+
+
+  const openWhatsApp = () => {
+    const phoneNumber = '91'+admin_contactIs;
+  const whatsappMessage = 'Hello! I want to know more about your services.';
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
     const checkDietSchedule = async () => {
       const payload = {
         userid: localStorage.getItem("userid"),
@@ -521,7 +534,7 @@ onClick={handleLogout}
           {/* Buy Now Button */}
           <button
             className="mt-3 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
-            onClick={() => handleBuyNow(product)} // define this function
+            onClick={() => openWhatsApp()} // define this function
           >
             Buy Now
           </button>
