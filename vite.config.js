@@ -29,15 +29,15 @@ import javascriptObfuscator from 'vite-plugin-javascript-obfuscator';
 import terser  from '@rollup/plugin-terser';
 
 export default defineConfig({
-  server: {
-          https: true,
-             host: true, // Allow access from network
-           port: 5173, // Default Vite port
-             https: {
-               key: fs.readFileSync("localhost+2-key.pem"),
-              cert: fs.readFileSync("localhost+2.pem"),
-             },
-           },
+  // server: {
+  //         https: true,
+  //            host: true, // Allow access from network
+  //          port: 5173, // Default Vite port
+  //            https: {
+  //              key: fs.readFileSync("localhost+2-key.pem"),
+  //             cert: fs.readFileSync("localhost+2.pem"),
+  //            },
+  //          },
   base: '/fitoxconnect/', // <-- your subdirectory path
 
   plugins: [

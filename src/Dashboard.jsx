@@ -270,9 +270,11 @@ const handleError = (err) => {
     };
 
 
-  const openWhatsApp = () => {
+  const openWhatsApp = (Pname, Pid) => {
     const phoneNumber = '91'+admin_contactIs;
-  const whatsappMessage = 'Hello! I want to know more about your services.';
+    const myuid = localStorage.getItem("userid");
+    const fullName = localStorage.getItem("name");
+  const whatsappMessage = `Hello, Name : ${fullName} (Client Id: ${myuid}). I want to buy ${Pname} (Product Id: ${Pid}) .`;
     const encodedMessage = encodeURIComponent(whatsappMessage);
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodedMessage}`;
     window.open(whatsappUrl, '_blank');
@@ -534,7 +536,7 @@ onClick={handleLogout}
           {/* Buy Now Button */}
           <button
             className="mt-3 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-200"
-            onClick={() => openWhatsApp()} // define this function
+            onClick={() => openWhatsApp(product.name,product.id)} // define this function
           >
             Buy Now
           </button>
