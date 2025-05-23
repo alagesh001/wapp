@@ -95,7 +95,7 @@ console.log(" response:adminCont ", data.result.admin_contact);
 
 useEffect(() => {
   if (scanResult !== null) {
-  if (scanResult === "123xyz") {
+  if (scanResult === "ncrtocDP2N") {
 
       markAttendance();
   }else{
@@ -438,11 +438,11 @@ onClick={handleLogout}
           </div>
 
           {/* Join Button */}
-          <button 
+          {/* <button 
           onClick={goToWebrtc}
           className="mt-4 bg-green-700 text-white px-4 py-2 rounded-full hover:bg-blue-800 transition">
             Join
-          </button>
+          </button> */}
         </>
       ) : (
         <p className="text-gray-500">Loading...</p>

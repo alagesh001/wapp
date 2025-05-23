@@ -277,7 +277,7 @@ onClick={handleLogout}
               <p className="text-sm text-gray-500">{time}</p>
             </div>
 
-            <button 
+            {/* <button 
     onClick={() => goToWebrtc(call.userid,call.name)}
     className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
               <svg
@@ -289,7 +289,7 @@ onClick={handleLogout}
                 <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.36 11.36 0 003.55.57 1 1 0 011 1v3.61a1 1 0 01-1 1A16 16 0 013 5a1 1 0 011-1h3.6a1 1 0 011 1 11.36 11.36 0 00.57 3.55 1 1 0 01-.21 1.11l-2.34 2.13z" />
               </svg>
               Start
-            </button>
+            </button> */}
           </div>
         );
       })}
