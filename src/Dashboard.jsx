@@ -40,9 +40,7 @@ function Dashboard() {
         document.removeEventListener("visibilitychange", handleVisibilityChange);
       };
     }, []);
-    useEffect(() => {
-      // This runs on page load or refresh
-      const fetchb_message = async () => {
+       const fetchb_message = async () => {
         setLoading(true);
       //  setError(null);
         const gymId = localStorage.getItem("gym_id");
@@ -78,6 +76,9 @@ console.log(" response:adminCont ", data.result.admin_contact);
         } finally {
         }
       };
+    useEffect(() => {
+      // This runs on page load or refresh
+   
      
   
       fetchb_message();
@@ -555,7 +556,12 @@ onClick={handleLogout}
   className={`flex flex-col items-center ${
     activeTab === "Attendance" ? "text-orange-500 font-bold" : "text-gray-500"
   }`}
-  onClick={() => setActiveTab("Attendance")}
+  onClick={() =>{
+
+  fetchb_message();
+   setActiveTab("Attendance")}
+
+}
 >
   <ImCheckmark size={activeTab === "Attendance" ? 30 : 24} /> {/* Increase size if active */}
   <span className={`text-sm ${activeTab === "Attendance" ? "text-lg font-bold" : ""}`}>
