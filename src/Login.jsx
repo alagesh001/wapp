@@ -80,44 +80,54 @@ function Login() {
         id:password,
         type: activeTab === "members" ? 1 : 2, // Type 1 for Users, 2 for Dietitians
     };
+try {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      try {
-          const response = await fetch("https://oxadmedia.in/loginAttend", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-          });
+  const response = await fetch("https://oxadmedia.in/loginAttend", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    signal: controller.signal,
+  });
 
-          const data = await response.json();
+  clearTimeout(timeoutId);
 
-          if (data.success) {
-              setSuccessMessage(data.message);
-              localStorage.setItem("userid", data.message.userid); // Store token for authentication
-              localStorage.setItem("name", data.message.name);
-              localStorage.setItem("gym_id", data.message.gym_id);
-              localStorage.setItem("pass_key",password);
-              localStorage.setItem("gender",data.message.gender);
-              localStorage.setItem("type",data.type);
+  const data = await response.json();
 
-              console.log("Login successful:", data);
-              localStorage.setItem("isLoggedIn", "true");
-              if(data.type == 1){
-                navigate("/dashboard"); // Redirect to Dashboard
+  if (data.success) {
+    setSuccessMessage(data.message);
+    localStorage.setItem("userid", data.message.userid); // Store token for authentication
+    localStorage.setItem("name", data.message.name);
+    localStorage.setItem("gym_id", data.message.gym_id);
+    localStorage.setItem("pass_key", password);
+    localStorage.setItem("gender", data.message.gender);
+    localStorage.setItem("type", data.type);
 
-              }else{
-                navigate("/dashboard_diet"); // Redirect to Dashboard
+    console.log("Login successful:", data);
+    localStorage.setItem("isLoggedIn", "true");
 
-              }
-                   } else {
-              setError(data.message || "Login failed.");
-          }
-      } catch (err) {
-          setError("Something went wrong. Please try again.");
-      } finally {
-          setLoading(false);
-      }
+    if (data.type == 1) {
+      navigate("/dashboard"); // Redirect to Dashboard
+    } else {
+      navigate("/dashboard_diet"); // Redirect to Diet Dashboard
+    }
+  } else {
+    setError(data.message || "Login failed.");
+  }
+} catch (err) {
+      setError("Something went wrong. Check your internet connection.");
+
+  // if (err.name === "AbortError") {
+  //   setError("Request timed out. Please try again.");
+  // } else {
+  //   setError("Something went wrong. Check your internet connection.");
+  // }
+} finally {
+  setLoading(false);
+}
   };
 
     return (

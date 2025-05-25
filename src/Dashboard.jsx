@@ -41,6 +41,7 @@ function Dashboard() {
       };
     }, []);
        const fetchb_message = async () => {
+        setBroadMessage("Loading...");
         setLoading(true);
       //  setError(null);
         const gymId = localStorage.getItem("gym_id");
@@ -65,7 +66,6 @@ function Dashboard() {
           if(data.success){
 setBroadMessage(data.result.broad_msg);
 setAdminCont(data.result.admin_contact ? String(data.result.admin_contact) : "null");
-console.log(" response:adminCont ", data.result.admin_contact);
 
           //  setCurrentView("products");
           
@@ -192,26 +192,38 @@ const handleError = (err) => {
         userid: localStorage.getItem("userid"),
         id:localStorage.getItem("pass_key"),
     };
-      setAttendanceResponse("Fetching...");
-      try {
-        const response = await fetch("https://oxadmedia.in/markAttendance", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-  
-        const data = await response.json();
-        setAttendanceResponse(data.message);
-        if(data.success){
-          setAttendanceCount(data.a_count);
-          setMarkSuccess(true)
-          setShowScanner(false);
-        }
-      } catch (error) {
-        setAttendanceResponse("Failed to mark attendance. Try again.");
-      }
+      setAttendanceResponse("Marking...");
+  try {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+  const response = await fetch("https://oxadmedia.in/markAttendance", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    signal: controller.signal,
+  });
+
+  clearTimeout(timeoutId);
+
+  const data = await response.json();
+  setAttendanceResponse(data.message);
+  if (data.success) {
+    setAttendanceCount(data.a_count);
+    setMarkSuccess(true);
+    setShowScanner(false);
+  }
+} catch (error) {
+      setAttendanceResponse("Failed to mark attendance. Check your internet connection.");
+
+  // if (error.name === "AbortError") {
+  //   setAttendanceResponse("Request timed out. Please try again.");
+  // } else {
+  //   setAttendanceResponse("Failed to mark attendance. Check your internet connection.");
+  // }
+}
     };
     const formatDateTime = (dateString) => {
       const date = new Date(dateString);
@@ -481,7 +493,7 @@ onClick={handleLogout}
 )}
     <p className="mt-4 text-lg font-semibold text-center
   ${markSuccess ? 'text-green-600' : 'text-red-600'}">
-  {markSuccess ? "✅ Attendance Marked!" : "❌ Attendance Failed"}
+  {markSuccess ? "✅ Attendance Marked!" : ""}
 </p>
    
     <button
