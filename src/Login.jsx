@@ -104,7 +104,13 @@ try {
     localStorage.setItem("gym_id", data.message.gym_id);
     localStorage.setItem("pass_key", password);
     localStorage.setItem("gender", data.message.gender);
+
+
     localStorage.setItem("type", data.type);
+    if(data.type == 1){
+        localStorage.setItem("rDate", data.message.rDate);
+    }
+        
 
     console.log("Login successful:", data);
     localStorage.setItem("isLoggedIn", "true");

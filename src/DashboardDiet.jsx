@@ -258,10 +258,14 @@ onClick={handleLogout}
     
 </div>
 {activeTab === "Dietician" && (
-    <div className="min-h-screen bg-white py-10 px-4 w-full max-w-4xl mx-auto">
-    <h2 className="text-center text-xl font-bold mb-6">Scheduled Calls</h2>
+  <div className="min-h-screen bg-white py-10 px-4 w-full max-w-4xl mx-auto">
 
-      <div className="space-y-4 max-w-2xl mx-auto">
+    {/* Latest 10 Schedules Heading */}
+<h3 className="text-center text-xl font-bold mt-15 mb-6">Latest 10 Schedules</h3>
+
+  
+
+    <div className="space-y-4 max-w-2xl mx-auto">
       {calls.map((call) => {
         const { date, day, time } = formatDate(call.diet_schedule); // ✅ Add this here
 
@@ -277,9 +281,10 @@ onClick={handleLogout}
               <p className="text-sm text-gray-500">{time}</p>
             </div>
 
+            {/* Uncomment to enable Start button */}
             {/* <button 
-    onClick={() => goToWebrtc(call.userid,call.name)}
-    className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+              onClick={() => goToWebrtc(call.userid, call.name)}
+              className="flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-blue-700">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -293,9 +298,11 @@ onClick={handleLogout}
           </div>
         );
       })}
-      </div>
     </div>
+  </div>
 )}
+
+
      
 {activeTab ==="Profile" &&(
  <div className="min-h-screen bg-white flex items-center justify-center px-4">

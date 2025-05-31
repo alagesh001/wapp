@@ -139,11 +139,13 @@ const handleError = (err) => {
     }, []);
     const mygender = localStorage.getItem("gender");
     const myuid = localStorage.getItem("userid");
+    const rDate = localStorage.getItem("rDate");
 
 
     const user = {
       fullName: localStorage.getItem("name"),
       userId: myuid,
+        rDate: rDate, // hi
       password: "password123", // hidden by default
       logo: mygender === "Female"
       ? "https://oxadmedia.in/images/female_dp.jpg"
@@ -353,10 +355,10 @@ onClick={handleLogout}
        <div className="grid grid-cols-3 gap-4 text-gray-700 text-sm sm:text-base">
          <div className="font-medium">Full Name</div>
          <div className="col-span-2">{user.fullName}</div>
-
          <div className="font-medium">Member ID</div>
          <div className="col-span-2">{user.userId}</div>
-
+ <div className="font-medium">Expiry Date</div>
+         <div className="col-span-2">{user.rDate}</div>
          <div className="font-medium">Password</div>
          <div className="col-span-2">
            {editing ? (
