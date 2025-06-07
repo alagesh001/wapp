@@ -3,6 +3,7 @@ import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { ImCheckmark,ImCart,ImUserCheck,ImHome} from "react-icons/im";
 import QrScanner from "react-qr-scanner";
+import { GiWeightLiftingUp } from "react-icons/gi";
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -22,7 +23,70 @@ function Dashboard() {
     const [newPass, setNewPass] = useState("");
     const [message, setMessage] = useState("");
     const [broadmessage, setBroadMessage] = useState("");
-
+  const weeklyPlan = [
+    {
+      day: "Day 1 - Chest and Triceps",
+      exercises: [
+        { name: "Flat Bench Press", sets: 4, reps: "8-12" },
+        { name: "Incline Dumbbell Press", sets: 3, reps: "10-12" },
+        { name: "Cable Chest Fly", sets: 3, reps: "12-15" },
+        { name: "Tricep Pushdowns", sets: 4, reps: "10-12" },
+        { name: "Overhead Tricep Extension", sets: 3, reps: "12-15" },
+      ],
+    },
+    {
+      day: "Day 2 - Back and Biceps",
+      exercises: [
+        { name: "Deadlifts", sets: 4, reps: "6-8" },
+        { name: "Pull-Ups", sets: 4, reps: "8-12" },
+        { name: "Bent-Over Rows", sets: 4, reps: "10-12" },
+        { name: "Barbell Bicep Curls", sets: 3, reps: "10-12" },
+        { name: "Hammer Curls", sets: 3, reps: "12-15" },
+      ],
+    },
+    {
+      day: "Day 3 - Legs",
+      exercises: [
+        { name: "Squats", sets: 4, reps: "8-10" },
+        { name: "Leg Press", sets: 4, reps: "10-12" },
+        { name: "Romanian Deadlifts", sets: 3, reps: "10-12" },
+        { name: "Walking Lunges", sets: 3, reps: "12/leg" },
+        { name: "Standing Calf Raises", sets: 4, reps: "15-20" },
+      ],
+    },
+    {
+      day: "Day 4 - Shoulders",
+      exercises: [
+        { name: "Overhead Barbell Press", sets: 4, reps: "8-10" },
+        { name: "Lateral Raises", sets: 3, reps: "12-15" },
+        { name: "Front Raises", sets: 3, reps: "12-15" },
+        { name: "Face Pulls", sets: 4, reps: "12-15" },
+        { name: "Dumbbell Shrugs", sets: 3, reps: "15-20" },
+      ],
+    },
+    {
+      day: "Day 5 - Functional Training",
+      exercises: [
+        { name: "Kettlebell Swings", sets: 3, reps: "15-20" },
+        { name: "Battle Ropes", sets: 3, reps: "30 seconds" },
+        { name: "Burpees", sets: 3, reps: "15" },
+        { name: "Medicine Ball Slams", sets: 3, reps: "12" },
+      ],
+    },
+    {
+      day: "Day 6 - Cardio & Core",
+      exercises: [
+        { name: "Running (Treadmill)", sets: 1, reps: "20-30 minutes" },
+        { name: "Plank", sets: 3, reps: "60 seconds" },
+        { name: "Russian Twists", sets: 3, reps: "15/side" },
+        { name: "Bicycle Crunches", sets: 3, reps: "12-15" },
+      ],
+    },
+    {
+      day: "Day 7 - Rest",
+      exercises: ["Rest and recovery. Foam rolling and stretching."],
+    },
+  ];
     useEffect(() => {
       const handleVisibilityChange = () => {
         if (document.visibilityState === "hidden") {
@@ -560,70 +624,164 @@ onClick={handleLogout}
     </div>
   </div>
 )}
-
-
+{activeTab === "Workouts" && (
+  <div className="bg-white py-10">
+      <div className="max-w-5xl mx-auto bg-white shadow-md rounded-2xl p-8">
+        <h1 className="text-3xl font-bold text-center mb-8 text-blue-600">
+          Weekly Gym Workout Plan
+        </h1>
+        {weeklyPlan.map((day, index) => (
+          <div key={index} className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+              {day.day}
+            </h2>
+            <table className="w-full table-auto border-collapse border border-gray-300">
+              <thead className="bg-blue-200">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Exercise
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Sets
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Reps
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {day.exercises.map((exercise, i) =>
+                  typeof exercise === "string" ? (
+                    <tr key={i}>
+                      <td
+                        colSpan="3"
+                        className="border border-gray-300 px-4 py-2 italic text-center text-gray-600"
+                      >
+                        {exercise}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={i}>
+                      <td className="border border-gray-300 px-4 py-2">
+                        {exercise.name}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-center">
+                        {exercise.sets}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-center">
+                        {exercise.reps}
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        ))}
+      </div>
+    </div>
+)}
       </div>
     
           {/* Bottom Navigation Tabs */}
-          <nav className="fixed bottom-0 left-0 w-full bg-white shadow-md flex justify-around py-3 border-t">
-          <button
-  className={`flex flex-col items-center ${
-    activeTab === "Attendance" ? "text-orange-500 font-bold" : "text-gray-500"
-  }`}
-  onClick={() =>{
+    <nav className="fixed bottom-0 left-0 w-full bg-white shadow-md py-3 border-t">
+  <div className="flex justify-around">
+    {/* Attendance */}
+    <button
+      className={`flex flex-col items-center ${
+        activeTab === "Attendance" ? "text-orange-500 font-bold" : "text-gray-500"
+      }`}
+      onClick={() => {
+        fetchb_message();
+        setActiveTab("Attendance");
+      }}
+    >
+      <ImCheckmark size={activeTab === "Attendance" ? 24 : 20} />
+      <span
+        className={`text-xs ${
+          activeTab === "Attendance" ? "font-bold" : ""
+        }`}
+      >
+        Attendance
+      </span>
+    </button>
 
-  fetchb_message();
-   setActiveTab("Attendance")}
+    {/* Products */}
+    <button
+      className={`flex flex-col items-center ${
+        activeTab === "Products" ? "text-orange-500 font-bold" : "text-gray-500"
+      }`}
+      onClick={() => {
+        fetchProducts();
+        setActiveTab("Products");
+      }}
+    >
+      <ImCart size={activeTab === "Products" ? 24 : 20} />
+      <span
+        className={`text-xs ${
+          activeTab === "Products" ? "font-bold" : ""
+        }`}
+      >
+        Products
+      </span>
+    </button>
 
-}
->
-  <ImCheckmark size={activeTab === "Attendance" ? 30 : 24} /> {/* Increase size if active */}
-  <span className={`text-sm ${activeTab === "Attendance" ? "text-lg font-bold" : ""}`}>
-  Attendance
-  </span>
-</button>
-           
-<button
-  className={`flex flex-col items-center ${
-    activeTab === "Products" ? "text-orange-500 font-bold" : "text-gray-500"
-  }`}
-  onClick={() => {
-    fetchProducts(); 
-    setActiveTab("Products");}}
->
-  <ImCart size={activeTab === "Products" ? 30 : 24} /> {/* Increase size if active */}
-  <span className={`text-sm ${activeTab === "Products" ? "text-lg font-bold" : ""}`}>
-  Products
-  </span>
-</button>
-          
-            <button
-  className={`flex flex-col items-center ${
-    activeTab === "Dietician" ? "text-orange-500 font-bold" : "text-gray-500"
-  }`}
-  onClick={() =>{
-    checkDietSchedule();
-    setActiveTab("Dietician");}
-  }
->
-  <ImUserCheck size={activeTab === "Dietician" ? 30 : 24} /> {/* Increase size if active */}
-  <span className={`text-sm ${activeTab === "Dietician" ? "text-lg font-bold" : ""}`}>
-    Dietician
-  </span>
-</button>
-<button
-  className={`flex flex-col items-center ${
-    activeTab === "Profile" ? "text-orange-500 font-bold" : "text-gray-500"
-  }`}
-  onClick={() => setActiveTab("Profile")}
->
-  <ImHome size={activeTab === "Profile" ? 30 : 24} /> {/* Increase size if active */}
-  <span className={`text-sm ${activeTab === "Profile" ? "text-lg font-bold" : ""}`}>
-  Profile
-  </span>
-</button>
-          
-          </nav>
+    {/* Dietician */}
+    <button
+      className={`flex flex-col items-center ${
+        activeTab === "Dietician" ? "text-orange-500 font-bold" : "text-gray-500"
+      }`}
+      onClick={() => {
+        checkDietSchedule();
+        setActiveTab("Dietician");
+      }}
+    >
+      <ImUserCheck size={activeTab === "Dietician" ? 24 : 20} />
+      <span
+        className={`text-xs ${
+          activeTab === "Dietician" ? "font-bold" : ""
+        }`}
+      >
+        Dietician
+      </span>
+    </button>
+
+    {/* Workouts */}
+    <button
+      className={`flex flex-col items-center ${
+        activeTab === "Workouts" ? "text-orange-500 font-bold" : "text-gray-500"
+      }`}
+      onClick={() => setActiveTab("Workouts")}
+    >
+      <GiWeightLiftingUp size={activeTab === "Workouts" ? 24 : 20} />
+      <span
+        className={`text-xs ${
+          activeTab === "Workouts" ? "font-bold" : ""
+        }`}
+      >
+        Workout
+      </span>
+    </button>
+
+    {/* Profile */}
+    <button
+      className={`flex flex-col items-center ${
+        activeTab === "Profile" ? "text-orange-500 font-bold" : "text-gray-500"
+      }`}
+      onClick={() => setActiveTab("Profile")}
+    >
+      <ImHome size={activeTab === "Profile" ? 24 : 20} />
+      <span
+        className={`text-xs ${
+          activeTab === "Profile" ? "font-bold" : ""
+        }`}
+      >
+        Profile
+      </span>
+    </button>
+  </div>
+</nav>
+
         </div>
       );
     };
